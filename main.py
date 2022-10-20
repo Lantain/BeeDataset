@@ -108,3 +108,4 @@ def start():
         PBTXT_INPUT
     )
     print("[6] Done")
+start()
