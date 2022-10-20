@@ -3,7 +3,7 @@ import os
 
 def crop_annotations(source_dir, target_dir, ann, fi):
     [name, ext] = ann["file_name"].split(".") 
-    im = Image.open(f"{source_dir}\{ann['file_name']}")
+    im = Image.open(f"{source_dir}/{ann['file_name']}")
     
     i = 0
     for a in ann["annotations"]:
