@@ -5,6 +5,7 @@ import util
 import image 
 import csv_processor
 import record_json
+import record_csv
 
 SOURCE_DIR = "./source"
 ASSETS_DIR = "./assets"
@@ -105,6 +106,18 @@ def start():
         f"{TEST_DIR}/annotations.json", 
         TEST_IMAGES_DIR, 
         f"{TEST_DIR}/train.record",
+        PBTXT_INPUT
+    )
+    record_csv.create_record_csv(
+        f"{TRAIN_DIR}/annotations.csv", 
+        TRAIN_IMAGES_DIR, 
+        f"{TRAIN_DIR}/train_csv.tfrecord", 
+        PBTXT_INPUT
+    )
+    record_csv.create_record_csv(
+        f"{TEST_DIR}/annotations.csv", 
+        TEST_IMAGES_DIR, 
+        f"{TEST_DIR}/test_csv.tfrecord", 
         PBTXT_INPUT
     )
     print("[6] Done")

@@ -1,29 +1,33 @@
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
-import json
+
 import os
 import io
-from tkinter.tix import IMAGE
 import pandas as pd
 import tensorflow as tf
+import argparse
+
+from PIL import Image
+from tqdm import tqdm
 from object_detection.utils import dataset_util
 from collections import namedtuple, OrderedDict
 
-JSON_INPUT='./bees.json'
-CSV_INPUT='./bees.csv'
-PBTXT_INPUT='./bees.pbtxt'
-IMAGE_DIR='./used'
-OUTPUT_PATH='./bees.tfrecord'
+
+def __split(df, group):
+   data = namedtuple('data', ['filename', 'object'])
+   gb = df.groupby(group)
+   return [data(filename, gb.get_group(x)) for filename, x in zip(gb.groups.keys(), gb.groups)]
+
 
 def create_tf_example(group, path, class_dict):
-   with tf.io.gfile.GFile(os.path.join(path, '{}'.format(group['file_name'])), 'rb') as fid:
+   with tf.io.gfile.GFile(os.path.join(path, '{}'.format(group.filename)), 'rb') as fid:
       encoded_jpg = fid.read()
+   encoded_jpg_io = io.BytesIO(encoded_jpg)
+   image = Image.open(encoded_jpg_io)
+   width, height = image.size
 
-   width = group["width"]
-   height = group["height"]
-
-   filename = group['file_name'].encode('utf8')
+   filename = group.filename.encode('utf8')
    image_format = b'jpg'
    xmins = []
    xmaxs = []
@@ -32,22 +36,25 @@ def create_tf_example(group, path, class_dict):
    classes_text = []
    classes = []
 
-   for row in group['annotations']: 
-      xmin = row['bbox']['xmin']
-      xmax = row['bbox']['xmax']
-      ymin = row['bbox']['ymin']
-      ymax = row['bbox']['ymax']
-      
+   for index, row in group.object.iterrows():
+      if set(['xmin_rel', 'xmax_rel', 'ymin_rel', 'ymax_rel']).issubset(set(row.index)):
+         xmin = row['xmin_rel']
+         xmax = row['xmax_rel']
+         ymin = row['ymin_rel']
+         ymax = row['ymax_rel']
+
+      elif set(['xmin', 'xmax', 'ymin', 'ymax']).issubset(set(row.index)):
+         xmin = row['xmin'] / width
+         xmax = row['xmax'] / width
+         ymin = row['ymin'] / height
+         ymax = row['ymax'] / height
+
       xmins.append(xmin)
       xmaxs.append(xmax)
       ymins.append(ymin)
       ymaxs.append(ymax)
-
-      if len(row['classes']) > 0:  
-        class_name = row['classes'][0]
-
-        classes_text.append(str(class_name).encode('utf8'))
-        classes.append(class_dict[str(class_name)])
+      classes_text.append(str(row['class']).encode('utf8'))
+      classes.append(class_dict[str(row['class'])])
 
    tf_example = tf.train.Example(features=tf.train.Features(
        feature={
@@ -99,20 +106,18 @@ def class_dict_from_pbtxt(pbtxt_path):
    return class_dict
 
 
-def create_record_json(JSON_INPUT, IMAGE_DIR, OUTPUT_PATH, PBTXT_INPUT):
+def create_record_csv(CSV_INPUT, IMAGE_DIR, OUTPUT_PATH, PBTXT_INPUT):
    class_dict = class_dict_from_pbtxt(PBTXT_INPUT)
 
    writer = tf.compat.v1.python_io.TFRecordWriter(OUTPUT_PATH)
    path = os.path.join(IMAGE_DIR)
-   f = open(JSON_INPUT)
-   
-   examples_json = json.load(f)
+   examples = pd.read_csv(CSV_INPUT)
+   grouped = __split(examples, 'filename')
 
-   for group in examples_json:
+   for group in tqdm(grouped, desc='groups'):
       tf_example = create_tf_example(group, path, class_dict)
       writer.write(tf_example.SerializeToString())
 
-
    writer.close()
    output_path = os.path.join(os.getcwd(), OUTPUT_PATH)
-   print('Successfully created the JSON TFRecords: {}'.format(output_path))
+   print('Successfully created the CSV TFRecords: {}'.format(output_path))
