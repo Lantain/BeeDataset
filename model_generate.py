@@ -22,7 +22,7 @@ def download_config(model_name):
 
 def decompress_model(model_name):
     file = tarfile.open(f'out/{model_name}.tar.gz')
-    file.extractall(f'.')
+    file.extractall(f'out/')
     file.close()
 
 
