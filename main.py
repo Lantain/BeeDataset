@@ -1,11 +1,12 @@
 import json
 import os
 import shutil
-import util
-import image 
-import csv_processor
-import record_json
-import record_csv
+import src.util as util
+import src.csv_processor as csv_processor
+import src.record_csv as record_csv
+import src.generate_bash as gen_sh
+
+MODELS = ['ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8']
 
 SOURCE_DIR = "./source"
 ASSETS_DIR = "./assets"
@@ -45,7 +46,7 @@ def start():
     file_i = 0
     for a in data:
         shutil.copyfile(f"{SOURCE_DIR}/{a['file_name']}", f"{USED_DIR}/{a['file_name']}")
-        image.crop_annotations(USED_DIR, CROPPED_DIR, a, file_i)
+        util.crop_annotations(USED_DIR, CROPPED_DIR, a, file_i)
         file_i += 1
     print("[2] Done")
 
@@ -96,18 +97,18 @@ def start():
     print("[5] Done")
 
     print("[6] Generate records")
-    record_json.create_record_json(
-        f"{TRAIN_DIR}/annotations.json", 
-        TRAIN_IMAGES_DIR, 
-        f"{TRAIN_DIR}/train.record", 
-        PBTXT_INPUT
-    )
-    record_json.create_record_json(
-        f"{TEST_DIR}/annotations.json", 
-        TEST_IMAGES_DIR, 
-        f"{TEST_DIR}/train.record",
-        PBTXT_INPUT
-    )
+    # record_json.create_record_json(
+    #     f"{TRAIN_DIR}/annotations.json", 
+    #     TRAIN_IMAGES_DIR, 
+    #     f"{TRAIN_DIR}/train.record", 
+    #     PBTXT_INPUT
+    # )
+    # record_json.create_record_json(
+    #     f"{TEST_DIR}/annotations.json", 
+    #     TEST_IMAGES_DIR, 
+    #     f"{TEST_DIR}/train.record",
+    #     PBTXT_INPUT
+    # )
     record_csv.create_record_csv(
         f"{TRAIN_DIR}/annotations.csv", 
         TRAIN_IMAGES_DIR, 
@@ -121,4 +122,9 @@ def start():
         PBTXT_INPUT
     )
     print("[6] Done")
+
+    print("[7] Generate bash scripts")
+    gen_sh.inference_graph_sh(MODELS)
+    gen_sh.models_generate_sh(MODELS)
+    print("[7] Done")
 start()

@@ -81,12 +81,11 @@ if __name__ == '__main__':
         description='Generate config & checkpoint for the given model',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('model', metavar='model', type=str, help='Model name')
-    parser.add_argument('base_path', metavar='base_path', type=str, help='Base beedataset path', default=os.getcwd())
 
     args = parser.parse_args()
     download_config(args.model)
     download_model(args.model)
     decompress_model(args.model)
-    fill_config(args.model, args.base_path)
+    fill_config(args.model, '.')
 
-    print(f'{args.base_path}/out/{args.model}.config')
+    print(f'Config ready at: {args.base_path}/out/{args.model}.config')
