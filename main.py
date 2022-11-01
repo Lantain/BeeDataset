@@ -6,7 +6,7 @@ import src.csv_processor as csv_processor
 import src.record_csv as record_csv
 import src.generate_bash as gen_sh
 
-MODELS = ['ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8']
+MODELS = ['ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8', 'faster_rcnn_resnet101_v1_640x640_coco17_tpu-8']
 
 SOURCE_DIR = "./source"
 ASSETS_DIR = "./assets"
