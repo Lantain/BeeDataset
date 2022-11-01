@@ -127,4 +127,6 @@ def start():
     gen_sh.inference_graph_sh(MODELS)
     gen_sh.models_generate_sh(MODELS)
     print("[7] Done")
-start()
+
+if __name__ == '__main__':
+    start()
