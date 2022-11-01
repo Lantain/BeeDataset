@@ -22,4 +22,3 @@ cd ../..
 
 echo "Generate models"
 python3 main.py
-python3 model_generate.py ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8 ./
