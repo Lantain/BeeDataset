@@ -81,7 +81,6 @@ if __name__ == '__main__':
         description='Generate config & checkpoint for the given model',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('model', metavar='model', type=str, help='Model name')
-    parser.add_argument('base_path', metavar='base_path', type=str, help='Dataset folder path')
 
     args = parser.parse_args()
     download_config(args.model)
@@ -89,4 +88,4 @@ if __name__ == '__main__':
     decompress_model(args.model)
     fill_config(args.model, '.')
 
-    print(f'Config ready at: {args.base_path}/out/{args.model}.config')
+    print(f'Config ready at: ./out/{args.model}.config')
