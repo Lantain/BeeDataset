@@ -5,7 +5,7 @@ def save_to_file(path, str):
 def models_generate_sh(model_names):
     str = '#!/bin/bash'
     for name in model_names:
-        str += f"\npython3 model_generate.py {name}"
+        str += f"\npython3 model_generate.py {name} $PWD"
 
     save_to_file('./out/generate.sh', str)
         
