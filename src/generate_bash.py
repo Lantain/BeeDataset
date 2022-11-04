@@ -18,7 +18,7 @@ def inference_graph_sh(model_names):
         str += f'''\npython3 exporter_main_v2.py \
             --trained_checkpoint_dir=../../../out/trained_{name} \
             --pipeline_config_path=../../../out/{name}.config \
-            --output_directory ../../../out/interference_{name}'''
+            --output_directory ../../../out/inference_{name}'''
     save_to_file('./out/inference.sh', str)
 
 
