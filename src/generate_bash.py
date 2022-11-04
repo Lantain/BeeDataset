@@ -15,12 +15,10 @@ def inference_graph_sh(model_names):
     str += '\ncd ./models/research/object_detection\n'
 
     for name in model_names:
-        str += f'''python3 exporter_main_v2.py \
-            --trained_checkpoint_dir=./trained_{name} \
-            --pipeline_config_path=./out/{name}.config \
-            --output_directory ./out/interference_{name}
-        '''
-
+        str += f'''\npython3 exporter_main_v2.py \
+            --trained_checkpoint_dir=../../../out/trained_{name} \
+            --pipeline_config_path=../../../out/{name}.config \
+            --output_directory ../../../out/interference_{name}'''
     save_to_file('./out/inference.sh', str)
 
 

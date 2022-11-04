@@ -6,7 +6,7 @@ import src.csv_processor as csv_processor
 import src.record_csv as record_csv
 import src.generate_bash as gen_sh
 
-MODELS = ['ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8', 'faster_rcnn_resnet101_v1_640x640_coco17_tpu-8']
+MODELS_LIST = ['ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8', 'faster_rcnn_resnet101_v1_640x640_coco17_tpu-8']
 
 SOURCE_DIR = "./source"
 ASSETS_DIR = "./assets"
@@ -28,7 +28,7 @@ CROPPED_DIR =        f"{OUT_DIR}/crop"
 CSVS_DIR =           f"{OUT_DIR}/used_csvs"
 RECORD_OUTPUT_PATH = f"{OUT_DIR}/record.tfrecord"
 
-def start():
+def start(MODELS):
     print("[0] Pipeline started")
 
     f = open(JSON_INPUT)
@@ -129,4 +129,4 @@ def start():
     print("[7] Done")
 
 if __name__ == '__main__':
-    start()
+    start(MODELS_LIST)

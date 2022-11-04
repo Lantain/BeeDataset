@@ -4,6 +4,7 @@ import numpy as np
 import src.util as utils
 from object_detection.utils import label_map_util
 from object_detection.utils import visualization_utils as viz_utils
+import matplotlib.pyplot as plt
 
 def get_model(saved_model_path):
     print('Loading model...', end='')
@@ -27,6 +28,24 @@ def get_detections(detect_fn, input_img_path):
     print(f"Detections: {num_detections}")
     
     return detections
+
+def show_images_pair(img_np1, img_np2):
+    fig = plt.figure(figsize=(10, 7))
+    rows = 1
+    columns = 2
+
+    fig.add_subplot(rows, columns, 1)
+    plt.imshow(img_np1)
+    plt.axis('off')
+    plt.title("First")
+
+    fig.add_subplot(rows, columns, 2)
+    plt.imshow(img_np2)
+    plt.axis('off')
+    plt.title("Second")
+
+    plt.show()
+
 
 def get_processed_image(detections, labels_path, input_img_path):
     category_index = get_category_index(labels_path)
@@ -58,3 +77,4 @@ if __name__ == '__main__':
     model_fn = get_model(path_to_model)
     detections = get_detections(model_fn, args.image)
     img_detections = get_processed_image(detections, "./assets/labels.pbtxt", args.image)
+

@@ -16,9 +16,3 @@ python -m pip install .
 
 echo "Test compiled model builder"
 python object_detection/builders/model_builder_tf2_test.py
-
-echo "Return to BeeDataset repo home"
-cd ../..
-
-echo "Generate models"
-python3 main.py
