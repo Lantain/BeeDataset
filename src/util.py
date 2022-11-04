@@ -34,11 +34,15 @@ def crop_annotations(source_dir, target_dir, ann, fi):
             
         i += 1
 
-def image_to_input_tensor(path):
+def image_to_np(path):
     img = cv2.imread(path, 3)
     b,g,r = cv2.split(img)           # get b, g, r
     rgb_img = cv2.merge([r,g,b])     # switch it to r, g, b
     image_np = np.array(rgb_img)
+    return image_np
+
+def image_to_input_tensor(path):
+    image_np = image_to_np(path)
     
     input_tensor = tf.convert_to_tensor(image_np)
     # The model expects a batch of images, so add an axis with `tf.newaxis`.

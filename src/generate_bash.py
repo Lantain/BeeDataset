@@ -12,13 +12,13 @@ def models_generate_sh(model_names):
 
 def inference_graph_sh(model_names):
     str = '#!/bin/bash'
-    str += '\ncd /content/models/research/object_detection\n'
+    str += '\ncd ./models/research/object_detection\n'
 
     for name in model_names:
         str += f'''python3 exporter_main_v2.py \
-            --trained_checkpoint_dir=/content/{name} \
-            --pipeline_config_path=/content/models/research/dataset/out/{name}.config \
-            --output_directory /content/interference_{name}
+            --trained_checkpoint_dir=./trained_{name} \
+            --pipeline_config_path=./out/{name}.config \
+            --output_directory ./out/interference_{name}
         '''
 
     save_to_file('./out/inference.sh', str)
