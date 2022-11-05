@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import argparse
 import src.util as util
 import src.csv_processor as csv_processor
 import src.record_csv as record_csv
@@ -28,7 +29,7 @@ CROPPED_DIR =        f"{OUT_DIR}/crop"
 CSVS_DIR =           f"{OUT_DIR}/used_csvs"
 RECORD_OUTPUT_PATH = f"{OUT_DIR}/record.tfrecord"
 
-def start(MODELS):
+def start(MODELS, tmp_dir):
     print("[0] Pipeline started")
 
     f = open(JSON_INPUT)
@@ -126,7 +127,14 @@ def start(MODELS):
     print("[7] Generate bash scripts")
     gen_sh.inference_graph_sh(MODELS)
     gen_sh.models_generate_sh(MODELS)
+
+    for model in MODELS:
+        gen_sh.train_sh(model, tmp_dir)
+
     print("[7] Done")
 
 if __name__ == '__main__':
-    start(MODELS_LIST)
+    parser = argparse.ArgumentParser(prog = 'Main', description = 'Main part', epilog = 'Huh')
+    parser.add_argument('-t', '--tmp', default="/content/gdrive/MyDrive/tmp")
+    args = parser.parse_args()
+    start(MODELS_LIST, args.tmp)
