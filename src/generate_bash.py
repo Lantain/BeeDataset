@@ -1,3 +1,5 @@
+import os
+
 def save_to_file(path, str):
     with open(path, 'w') as file:
         file.write(str)
@@ -16,9 +18,9 @@ def inference_graph_sh(model_names):
 
     for name in model_names:
         str += f'''\npython3 exporter_main_v2.py \
-            --trained_checkpoint_dir=../../../out/trained_{name} \
-            --pipeline_config_path=../../../out/{name}.config \
-            --output_directory ../../../out/inference_{name}'''
+            --trained_checkpoint_dir={os.getcwd()}/out/trained_{name} \
+            --pipeline_config_path={os.getcwd()}/out/{name}.config \
+            --output_directory={os.getcwd()}/out/inference_{name}'''
     save_to_file('./out/inference.sh', str)
 
 
