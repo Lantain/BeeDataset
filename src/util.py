@@ -63,7 +63,7 @@ def get_last_checkpoint_name(model_dir):
 
     for f in files:
         if re.search('ckpt-[0-9]{1,2}\.i.+', f):
-            filtered.append(f.replace('.index'))
+            filtered.append(f.replace('.index', ''))
     
     filtered.sort()
     last_checkpoint = filtered[len(filtered) - 1]
