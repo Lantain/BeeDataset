@@ -136,6 +136,6 @@ def start(MODELS, tmp_dir):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog = 'Main', description = 'Main part', epilog = 'Huh')
     parser.add_argument('-t', '--tmp', default="/content/gdrive/MyDrive/tmp")
-    parser.add_argument('-m', '--models')
+    parser.add_argument('-m', '--models', nargs="+")
     args = parser.parse_args()
     start(args.models.split(','), args.tmp)
