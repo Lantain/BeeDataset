@@ -138,4 +138,4 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--tmp', default="/content/gdrive/MyDrive/tmp")
     parser.add_argument('-m', '--models', nargs="+")
     args = parser.parse_args()
-    start(args.models.split(','), args.tmp)
+    start(args.models, args.tmp)
