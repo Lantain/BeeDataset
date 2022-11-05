@@ -57,7 +57,7 @@ def set_config_value(key, value, model):
         config = re.sub(f'{key}: ".*?"', f'{key}: "{value}"', config)
         f.write(config)
 
-def update_config_checkpoint(model_dir):
+def get_last_checkpoint_name(model_dir):
     checkpoints_path = f'{model_dir}/checkpoint'
     files = os.listdir(checkpoints_path)
     filtered = []
@@ -68,4 +68,4 @@ def update_config_checkpoint(model_dir):
     
     filtered.sort()
     last_checkpoint = filtered[len(filtered) - 1]
-    set_config_value('fine_tune_checkpoint', f"{checkpoints_path}/{last_checkpoint}")
+    return last_checkpoint
