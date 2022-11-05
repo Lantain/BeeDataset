@@ -58,8 +58,7 @@ def set_config_value(key, value, model):
         f.write(config)
 
 def get_last_checkpoint_name(model_dir):
-    checkpoints_path = f'{model_dir}/checkpoint'
-    files = os.listdir(checkpoints_path)
+    files = os.listdir(model_dir)
     filtered = []
 
     for f in files:

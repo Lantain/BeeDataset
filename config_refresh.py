@@ -11,4 +11,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     name = get_last_checkpoint_name(args.dir)
 
-    set_config_value('fine_tune_checkpoint', f"{args.dir}/checkpoint/{name}", args.model)
+    set_config_value('fine_tune_checkpoint', f"{args.dir}/{name}", args.model)
