@@ -44,7 +44,7 @@ def show_images_pair(img_np1, img_np2):
     plt.axis('off')
     plt.title("Second")
 
-    plt.show()
+    fig.show()
 
 
 def get_processed_image(detections, labels_path, input_img_path):
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     parser.add_argument('image', metavar='model', type=str, help='Test image path')
 
     args = parser.parse_args()
-    path_to_model = f"./out/interference_{args.model}/saved_model"
+    path_to_model = f"./out/inference_{args.model}/saved_model"
     
     model_fn = get_model(path_to_model)
     detections = get_detections(model_fn, args.image)

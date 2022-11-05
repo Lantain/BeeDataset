@@ -1,5 +1,6 @@
 import os
 import cv2
+import re
 import tensorflow as tf
 import numpy as np
 from PIL import Image
@@ -43,9 +44,28 @@ def image_to_np(path):
 
 def image_to_input_tensor(path):
     image_np = image_to_np(path)
-    
     input_tensor = tf.convert_to_tensor(image_np)
-    # The model expects a batch of images, so add an axis with `tf.newaxis`.
     input_tensor = input_tensor[tf.newaxis, ...]
-    #input_tensor = input_tensor_orig[:, :, :, :3] # <= add this line
     return input_tensor
+
+def set_config_value(key, value, model):
+    path = f"./out/{model}.config"
+    with open(path) as f:
+        config = f.read()
+
+    with open(path, 'w') as f:
+        config = re.sub(f'{key}: ".*?"', f'{key}: "{value}"', config)
+        f.write(config)
+
+def update_config_checkpoint(model_dir):
+    checkpoints_path = f'{model_dir}/checkpoint'
+    files = os.listdir(checkpoints_path)
+    filtered = []
+
+    for f in files:
+        if re.search('ckpt-[0-9]{1-2}\.i.+', ):
+            filtered.append(f.replace('.index'))
+    
+    filtered.sort()
+    last_checkpoint = filtered[len(filtered) - 1]
+    set_config_value('fine_tune_checkpoint', f"{checkpoints_path}/{last_checkpoint}")
