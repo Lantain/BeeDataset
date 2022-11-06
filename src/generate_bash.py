@@ -32,7 +32,7 @@ def train_sh(model, out_dir, steps=3000):
         python model_main_tf2.py \
         --model_dir={out_dir}/{model} \
         --num_train_steps=$1 \
-        --pipeline_config_path={os.getcwd()}/out/{model}.config \
+        --pipeline_config_path={os.getcwd()}/out/{model}/pipeline.config \
         --alsologtostderr'''
     save_to_file(f'./out/train_{model}.sh', str)
 #ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8

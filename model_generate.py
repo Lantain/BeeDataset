@@ -13,13 +13,6 @@ def download_model(model_name):
     r = requests.get(model_url, allow_redirects=True)
     open(f"out/{model_name}.tar.gz", 'wb').write(r.content)
 
-
-def download_config(model_name):
-    model_url = f"https://raw.githubusercontent.com/tensorflow/models/master/research/object_detection/configs/tf2/{model_name}.config"
-    r = requests.get(model_url, allow_redirects=True)
-    open(f"out/{model_name}.config", 'wb').write(r.content)
-
-
 def decompress_model(model_name):
     file = tarfile.open(f'out/{model_name}.tar.gz')
     file.extractall(f'out/')
@@ -27,7 +20,7 @@ def decompress_model(model_name):
 
 
 def fill_config(model_name, base_path):
-    base_config_path = f'{model_name}.config'
+    base_config_path = f'{model_name}/pipeline.config'
     labelmap_path = f'{base_path}/assets/labels.pbtxt'
     fine_tune_checkpoint = f'{base_path}/out/{model_name}/checkpoint/ckpt-0'
     train_record_path = f'{base_path}/out/train/train_csv.tfrecord'
@@ -84,7 +77,6 @@ if __name__ == '__main__':
     parser.add_argument('base_path', metavar='base_path', type=str, help='Base path')
 
     args = parser.parse_args()
-    download_config(args.model)
     download_model(args.model)
     decompress_model(args.model)
     fill_config(args.model, args.base_path)
