@@ -48,23 +48,28 @@ def image_to_input_tensor(path):
     input_tensor = input_tensor[tf.newaxis, ...]
     return input_tensor
 
-def set_config_value(key, value, model):
-    path = f"./out/{model}.config"
-    with open(path) as f:
-        config = f.read()
-
-    with open(path, 'w') as f:
-        config = re.sub(f'{key}: ".*?"', f'{key}: "{value}"', config)
-        f.write(config)
-
 def get_last_checkpoint_name(model_dir):
-    files = os.listdir(model_dir)
-    filtered = []
+    try:
+        files = os.listdir(model_dir)
+        filtered = []
 
-    for f in files:
-        if re.search('ckpt-[0-9]{1,2}\.i.+', f):
-            filtered.append(f.replace('.index', ''))
-    
-    filtered.sort()
-    last_checkpoint = filtered[len(filtered) - 1]
-    return last_checkpoint
+        for f in files:
+            if re.search('ckpt-[0-9]{1,2}\.i.+', f):
+                filtered.append(f.replace('.index', ''))
+        
+        filtered.sort()
+
+        if len(filtered) > 0:
+            last_checkpoint = filtered[len(filtered) - 1]
+            return last_checkpoint
+    except:
+        print(f"Failed to get last checkpoint: {model_dir}")
+
+def load_models_list(path):
+    with open(path) as f:
+        list = f.read()
+        return list.split(',')
+
+def save_models_list(models, path):
+    with open(path, 'w') as f:
+        f.write(','.join(models))

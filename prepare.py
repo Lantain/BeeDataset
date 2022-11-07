@@ -1,13 +1,13 @@
 import json
 import os
+from tqdm import tqdm
 import shutil
 import argparse
-import src.util as util
-import src.csv_processor as csv_processor
-import src.record_csv as record_csv
-import src.generate_bash as gen_sh
-
-MODELS_LIST = ['ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8', 'faster_rcnn_resnet101_v1_640x640_coco17_tpu-8']
+from src import util, annotations_csv, record_csv
+from src.processors import model as model_processor
+from src.processors import config as config_processor
+from src.processors import bash as bash_processor
+from src.util import save_models_list
 
 SOURCE_DIR = "./source"
 ASSETS_DIR = "./assets"
@@ -29,41 +29,43 @@ CROPPED_DIR =        f"{OUT_DIR}/crop"
 CSVS_DIR =           f"{OUT_DIR}/used_csvs"
 RECORD_OUTPUT_PATH = f"{OUT_DIR}/record.tfrecord"
 
-def start(MODELS, tmp_dir):
+MODELS_LIST =        f"{OUT_DIR}/models.txt"
+
+def main(models, trained_path):
     print("[0] Pipeline started")
 
     f = open(JSON_INPUT)
     data = json.load(f)
 
-    print("[1] Clearing...")
+    print("[1] Clearing...", end=' ')
     util.remove_files_from_dir(OUT_DIR)
 
     os.mkdir(OUT_DIR)
     os.mkdir(USED_DIR)
     os.mkdir(CROPPED_DIR)
-    print("[1] Done")
+    print("Done")
 
-    print("[2] Generated images...")
+    print("[2] Generating images...", end=' ')
     file_i = 0
     for a in data:
         shutil.copyfile(f"{SOURCE_DIR}/{a['file_name']}", f"{USED_DIR}/{a['file_name']}")
         util.crop_annotations(USED_DIR, CROPPED_DIR, a, file_i)
         file_i += 1
-    print("[2] Done")
+    print("Done")
 
-    print("[3] Generate csvs...")
+    print("[3] Generate csvs...", end='')
     os.mkdir(CSVS_DIR)
 
     for a in data:
-        csv_processor.generate_csv_from_annotation(a, CSVS_DIR)
-    print("[3] Done")
+        annotations_csv.generate_csv_from_annotation(a, CSVS_DIR)
+    print("Done")
 
-    print("[4] Splitting on sets")
+    print("[4] Splitting on sets...", end=' ')
     split_x = int(len(data) * 0.8)
     training_set, test_set = data[:split_x], data[split_x:]
-    print(f"[4] Done. Training len: {len(training_set)}; Test len: {len(test_set)}")
+    print(f"Done. Training len: {len(training_set)}; Test len: {len(test_set)}")
 
-    print("[5] Generating training & test folders...")
+    print("[5] Generating training & test folders... ", end=' ')
     try:
         os.mkdir(TRAIN_DIR)
         os.mkdir(TRAIN_IMAGES_DIR)
@@ -73,14 +75,14 @@ def start(MODELS, tmp_dir):
         os.mkdir(TEST_IMAGES_DIR)
         os.mkdir(TEST_CSV_DIR)
     except:
-        print("[5] Failed to create directories")
+        print("Failed to create directories")
 
     for t in training_set:
         filename = t['file_name']
         [name, ext] = filename.split(".") 
         shutil.copyfile(f"{USED_DIR}/{filename}", f"{TRAIN_IMAGES_DIR}/{filename}")
         shutil.copyfile(f"{CSVS_DIR}/{name}.csv", f"{TRAIN_CSV_DIR}/{name}.csv")
-        csv_processor.generate_csv_from_annotation_set(training_set, f"{TRAIN_DIR}/annotations.csv")
+        annotations_csv.generate_csv_from_annotation_set(training_set, f"{TRAIN_DIR}/annotations.csv")
         json_object = json.dumps(training_set, indent=4)
         with open(f"{TRAIN_DIR}/annotations.json", "w") as outfile:
             outfile.write(json_object)
@@ -90,26 +92,14 @@ def start(MODELS, tmp_dir):
         [name, ext] = filename.split(".") 
         shutil.copyfile(f"{USED_DIR}/{filename}", f"{TEST_IMAGES_DIR}/{filename}")
         shutil.copyfile(f"{CSVS_DIR}/{name}.csv", f"{TEST_CSV_DIR}/{name}.csv")
-        csv_processor.generate_csv_from_annotation_set(test_set, f"{TEST_DIR}/annotations.csv")
+        annotations_csv.generate_csv_from_annotation_set(test_set, f"{TEST_DIR}/annotations.csv")
         json_object = json.dumps(test_set, indent=4)
         with open(f"{TEST_DIR}/annotations.json", "w") as outfile:
             outfile.write(json_object)
 
-    print("[5] Done")
+    print("Done")
 
     print("[6] Generate records")
-    # record_json.create_record_json(
-    #     f"{TRAIN_DIR}/annotations.json", 
-    #     TRAIN_IMAGES_DIR, 
-    #     f"{TRAIN_DIR}/train.record", 
-    #     PBTXT_INPUT
-    # )
-    # record_json.create_record_json(
-    #     f"{TEST_DIR}/annotations.json", 
-    #     TEST_IMAGES_DIR, 
-    #     f"{TEST_DIR}/train.record",
-    #     PBTXT_INPUT
-    # )
     record_csv.create_record_csv(
         f"{TRAIN_DIR}/annotations.csv", 
         TRAIN_IMAGES_DIR, 
@@ -124,18 +114,37 @@ def start(MODELS, tmp_dir):
     )
     print("[6] Done")
 
-    print("[7] Generate bash scripts")
-    gen_sh.inference_graph_sh(MODELS)
-    gen_sh.models_generate_sh(MODELS)
+    print("[7] Save models list...", end=' ')
+    save_models_list(models, MODELS_LIST)
+    print("Done")
 
-    for model in MODELS:
-        gen_sh.train_sh(model, tmp_dir)
+    print("[8] Download & decompress model archives")
+    for model in tqdm(models, desc="models"):
+        model_processor.download_model(model)
+        model_processor.decompress_model(model)
+    print("[8] Done")
 
-    print("[7] Done")
+    print("[9] Fill config defaults", end=' ')
+    for model in models:
+        config_processor.fill_config_defaults(model)
+    print("Done")
+
+    print("[10] Prepare bash...", end=' ')
+    for model in models:
+        bash_processor.train_sh(model, trained_path)
+        bash_processor.inference_graph_sh(model, trained_path)
+        bash_processor.save_sh(model, trained_path)
+    bash_processor.train_env_sh(trained_path)
+    bash_processor.inference_graph_env_sh(trained_path)
+    bash_processor.save_env_sh(trained_path)
+    print('Done')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(prog = 'Main', description = 'Main part', epilog = 'Huh')
-    parser.add_argument('-t', '--tmp', default="/content/gdrive/MyDrive/tmp")
+    parser = argparse.ArgumentParser(prog = 'Main', description = 'Prepare workspace', epilog = 'Huh')
     parser.add_argument('-m', '--models', nargs="+")
+    parser.add_argument('-t', '--trained_path')
+
     args = parser.parse_args()
-    start(args.models, args.tmp)
+    
+    main(list(args.models), args.trained_path)
+    

@@ -7,7 +7,7 @@ from object_detection.utils import visualization_utils as viz_utils
 import matplotlib.pyplot as plt
 
 def get_model(saved_model_path):
-    print('Loading model...', end='')
+    print('Loading model...', end=' ')
     detect_fn = tf.saved_model.load(saved_model_path)
     print('Done!')
     return detect_fn
@@ -64,6 +64,14 @@ def get_processed_image(detections, labels_path, input_img_path):
 
     return image_np_with_detections
 
+def run(model, image):
+    path_to_model = f"./out/inference_{model}/saved_model"
+    
+    model_fn = get_model(path_to_model)
+    detections = get_detections(model_fn, image)
+    img_detections = get_processed_image(detections, "./assets/labels.pbtxt", image)
+    return img_detections
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Test model result',
@@ -72,9 +80,5 @@ if __name__ == '__main__':
     parser.add_argument('image', metavar='model', type=str, help='Test image path')
 
     args = parser.parse_args()
-    path_to_model = f"./out/inference_{args.model}/saved_model"
-    
-    model_fn = get_model(path_to_model)
-    detections = get_detections(model_fn, args.image)
-    img_detections = get_processed_image(detections, "./assets/labels.pbtxt", args.image)
+    run(args.model, args.image)
 
