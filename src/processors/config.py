@@ -84,11 +84,11 @@ def fill_config(model):
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
 
     if re.match('ssd_mobilenet_v2_fpnlite.+', model):
-        configs['model'].train_input_reader.tf_record_input_reader.input_path = get_train_record_path()
-        configs['model'].eval_input_reader.tf_record_input_reader.input_path = get_test_record_path()
+        configs['train_input_config'].tf_record_input_reader.input_path = get_train_record_path()
+        configs['eval_input_config'].tf_record_input_reader.input_path = get_test_record_path()
 
     if re.match('faster_rcnn_inception_resnet.+', model):
-        configs['model'].train_config.batch_size = 4
-        configs['model'].eval_config.batch_size = 4
+        configs['train_config'].batch_size = 4
+        configs['eval_config'].batch_size = 4
 
     config_util.save_pipeline_config(configs, pipeline_config_path)
