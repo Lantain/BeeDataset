@@ -31,8 +31,9 @@ def train_str(model, out_dir):
 def save_str(model, out_dir):
     str = f'''#!/bin/bash
         export LAST_SAVED_PATH=$1/{model}-$(date '+%m%d%H%M')
-        mkdir -p LAST_SAVED_PATH
-        cp -r {out_dir}/{model} LAST_SAVED_PATH'''
+        mkdir -p $LAST_SAVED_PATH
+        cp -r {out_dir}/{model} $LAST_SAVED_PATH
+        echo $LAST_SAVED_PATH'''
     return str
 
 def inference_graph_sh(model, out_dir):
