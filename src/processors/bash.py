@@ -27,9 +27,11 @@ def train_str(model, out_dir):
             --trained_checkpoint_dir={out_dir}/{model}
             --alsologtostderr'''
     return str
+
 def save_str(model, out_dir):
     str = f'''#!/bin/bash
-    cp -r {out_dir}/{model} $1/{model}_$(date '+%m-%d_%H:%M')'''
+        mkdir -p $1/{model}-$(date '+%m%d%H%M')
+        cp -r {out_dir}/{model} $1/{model}-$(date '+%m%d%H%M')'''
     return str
 
 def inference_graph_sh(model, out_dir):
