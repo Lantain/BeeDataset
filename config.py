@@ -1,6 +1,7 @@
 import argparse
 import os
-from src.util import get_last_checkpoint_name, set_config_value
+from src.util import get_last_checkpoint_name
+from src.processors import config as config_processor
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -11,5 +12,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     name = get_last_checkpoint_name(args.out)
-
-    set_config_value('fine_tune_checkpoint', f"{os.getcwd()}/{args.out}/{name}", args.model)
+    key = 'fine_tune_checkpoint'
+    config_processor.update_config_values_regex(args.model, list([
+            {
+                "regex": '{key}: ".*?"',
+                "value": f"{os.getcwd()}/{args.out}/{name}"
+            }
+        ])
+    )
