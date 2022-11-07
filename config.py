@@ -17,7 +17,7 @@ if __name__ == '__main__':
     config_processor.update_config_values_regex(args.model, list([
             {
                 "regex": f'{args.key}: ".*?"',
-                "value": f"{args.key}: {out}/{name}"
+                "value": f'{args.key}: "{out}/{name}"'
             }
         ])
     )
