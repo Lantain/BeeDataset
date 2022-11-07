@@ -14,6 +14,7 @@ if __name__ == '__main__':
     out = f"{os.getcwd()}/out/{args.model}/trained"
 
     name = get_last_checkpoint_name(out)
+    print(f"Updating {args.key} config value for model: {args.model}...")
     config_processor.update_config_values_regex(args.model, list([
             {
                 "regex": f'{args.key}: ".*?"',

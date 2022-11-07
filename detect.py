@@ -65,7 +65,7 @@ def get_processed_image(detections, labels_path, input_img_path):
     return image_np_with_detections
 
 def run(model, image):
-    path_to_model = f"./out/inference_{model}/saved_model"
+    path_to_model = f"./out/{model}/inference/saved_model"
     
     model_fn = get_model(path_to_model)
     detections = get_detections(model_fn, image)
