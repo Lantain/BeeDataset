@@ -9,7 +9,7 @@ def inference_graph_str(model, out_dir):
     str += f'\ncd {os.getcwd()}/models/research/object_detection\n'
     str += f'''
     python3 exporter_main_v2.py \
-        --trained_checkpoint_dir={out_dir} \
+        --trained_checkpoint_dir={os.getcwd()}/out/{model}/trained \
         --pipeline_config_path={os.getcwd()}/out/{model}/pipeline.config \
         --output_directory={os.getcwd()}/out/{model}/inference'''
     return str
@@ -54,7 +54,7 @@ def train_env_sh(out_dir):
 
 def save_sh(model, out_dir):
     str = save_str(model, out_dir)
-    save_to_file(f'./out/save.sh', str)
+    save_to_file(f'./out/{model}/save.sh', str)
 
 def save_env_sh(out_dir):
     str = save_str('$MODEL', out_dir)
