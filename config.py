@@ -16,7 +16,7 @@ if __name__ == '__main__':
     config_processor.update_config_values_regex(args.model, list([
             {
                 "regex": '{key}: ".*?"',
-                "value": f"{os.getcwd()}/{args.out}/{name}"
+                "value": f"{args.out}/{name}"
             }
         ])
     )
