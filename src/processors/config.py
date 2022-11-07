@@ -91,4 +91,5 @@ def fill_config(model):
         configs['train_config'].batch_size = 4
         configs['eval_config'].batch_size = 4
 
-    config_util.save_pipeline_config(configs, pipeline_config_path)
+    pipeline_proto = config_util.create_pipeline_proto_from_configs(configs)
+    config_util.save_pipeline_config(pipeline_proto, pipeline_config_path)
