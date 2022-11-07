@@ -1,6 +1,6 @@
 import re
 import os
-from object_detection.utils import config_util, save_pipeline_config
+from object_detection.utils import config_util
 
 def update_config_values_regex(model, values):
     config_path = f'./out/{model}/pipeline.config'
@@ -91,4 +91,4 @@ def fill_config(model):
         configs['model'].train_config.batch_size = 4
         configs['model'].eval_config.batch_size = 4
 
-    save_pipeline_config(configs, pipeline_config_path)
+    config_util.save_pipeline_config(configs, pipeline_config_path)
