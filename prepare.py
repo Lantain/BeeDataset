@@ -126,7 +126,7 @@ def main(models, trained_path):
 
     print("[9] Fill config defaults", end=' ')
     for model in models:
-        config_processor.fill_config_defaults(model)
+        config_processor.fill_config(model)
     print("Done")
 
     print("[10] Prepare bash...", end=' ')

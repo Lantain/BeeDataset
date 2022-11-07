@@ -79,7 +79,7 @@ def fill_config_defaults(model_name):
     update_config_values_regex(model_name, values)
 
 def fill_config(model):
-    pipeline_config_path = './out/{model}/pipeline.config'
+    pipeline_config_path = f'./out/{model}/pipeline.config'
     fill_config_defaults(model)
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
 
