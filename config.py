@@ -7,16 +7,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Main',
         formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('key')
     parser.add_argument('-m', '--model')
-    parser.add_argument('-o', '--out')
-
     args = parser.parse_args()
-    name = get_last_checkpoint_name(args.out)
-    key = 'fine_tune_checkpoint'
+    
+    out = f"{os.getcwd()}/out/{args.model}/trained"
+
+    name = get_last_checkpoint_name(out)
     config_processor.update_config_values_regex(args.model, list([
             {
-                "regex": '{key}: ".*?"',
-                "value": f"{args.out}/{name}"
+                "regex": f'{args.key}: ".*?"',
+                "value": f"{args.key}: {out}/{name}"
             }
         ])
     )
