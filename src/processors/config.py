@@ -20,7 +20,7 @@ def set_config_value(key, value, model):
         config = re.sub(f'{key}: ".*?"', f'{key}: "{value}"', config)
         f.write(config)
 
-def get_train_record_path(model):
+def get_train_record_path():
     cwd = os.getcwd().replace('\\', "\\\\")
     return f'{cwd}/out/train/train_csv.tfrecord'
 
@@ -36,8 +36,8 @@ def fill_config_defaults(model_name):
     cwd = os.getcwd().replace('\\', "\\\\");
     labelmap_path = f'{cwd}/assets/labels.pbtxt'
     fine_tune_checkpoint = get_fine_tune_checkpoint(model_name)
-    train_record_path = get_train_record_path(model_name)
-    test_record_path = get_test_record_path(model_name)
+    train_record_path = get_train_record_path()
+    test_record_path = get_test_record_path()
     num_classes = 1
     batch_size = 32
     num_steps = 30000
