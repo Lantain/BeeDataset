@@ -88,8 +88,8 @@ def fill_config(model):
         configs['eval_input_config'].tf_record_input_reader.input_path[:] = [get_test_record_path()]
 
     if re.match('faster_rcnn_inception_resnet.+', model):
-        configs['train_config'].batch_size = 4
-        configs['eval_config'].batch_size = 4
+        configs['train_config'].batch_size = 2
+        configs['eval_config'].batch_size = 2
 
     pipeline_proto = config_util.create_pipeline_proto_from_configs(configs)
     config_util.save_pipeline_config(pipeline_proto, f'./out/{model}')
