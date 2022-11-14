@@ -7,6 +7,7 @@ from src import util, annotations_csv, record_csv
 from src.processors import model as model_processor
 from src.processors import config as config_processor
 from src.processors import bash as bash_processor
+from src.processors.labels import generate_labels_file
 from src.util import save_models_list
 
 SOURCE_DIR = "./source"
@@ -14,7 +15,7 @@ ASSETS_DIR = "./assets"
 OUT_DIR = "./out"
 
 JSON_INPUT =         f"{ASSETS_DIR}/remo.json"
-PBTXT_INPUT =        f"{ASSETS_DIR}/labels.pbtxt"
+PBTXT_INPUT =        f"{OUT_DIR}/labels.pbtxt"
 
 TRAIN_DIR =          f"{OUT_DIR}/train"
 TRAIN_IMAGES_DIR =   f"{OUT_DIR}/train/images"
@@ -31,7 +32,7 @@ RECORD_OUTPUT_PATH = f"{OUT_DIR}/record.tfrecord"
 
 MODELS_LIST =        f"{OUT_DIR}/models.txt"
 
-def main(models, trained_path):
+def main(models: list, trained_path: str, labels: list):
     print("[0] Pipeline started")
 
     f = open(JSON_INPUT)
@@ -100,6 +101,8 @@ def main(models, trained_path):
     print("Done")
 
     print("[6] Generate records")
+    generate_labels_file(labels, PBTXT_INPUT)
+
     record_csv.create_record_csv(
         f"{TRAIN_DIR}/annotations.csv", 
         TRAIN_IMAGES_DIR, 
@@ -142,9 +145,10 @@ def main(models, trained_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog = 'Main', description = 'Prepare workspace', epilog = 'Huh')
     parser.add_argument('-m', '--models', nargs="+")
+    parser.add_argument('-l', '--labels', nargs="+")
     parser.add_argument('-t', '--trained_path')
 
     args = parser.parse_args()
     
-    main(list(args.models), args.trained_path)
+    main(list(args.models), args.trained_path, list(args.labels))
     
