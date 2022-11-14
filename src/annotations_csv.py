@@ -42,3 +42,10 @@ def generate_csv_from_annotation_set(anns, out_file):
             for row in rows:
                 writer.writerow(row)
 
+def save_rows(rows, out_file):
+    with open(out_file, 'w', encoding='UTF8') as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+        
+        for row in rows:
+            writer.writerow(row)
