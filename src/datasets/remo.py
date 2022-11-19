@@ -7,14 +7,15 @@ from PIL import Image
 OUT_DIR = "./out"
 ASSETS_DIR = "./assets"
 SOURCE_DIR = "./source"
-SPLIT_RATIO = .8
 
 def get_labels_list(ann):
     labels = list()
-    for a in ann["annotations"]:
+    
+    for a in ann[0]["annotations"]:
         for class_name in a['classes']:
-            if class_name in labels:
+            if class_name not in labels:
                 labels.append(class_name)
+    return labels
 
 def annotation_to_rows(ann):
     rows = list()
@@ -55,8 +56,8 @@ def fs_prepare(path):
 
 def copy_source_images(data, source_images_dir, out_dir):
     for a in data:
-        shutil.copyfile(f"{source_images_dir}/{a['file_name']}", f"{out_dir}/images/{a['file_name']}")
-        crop_annotations(source_images_dir, f'{out_dir}/crop', a)
+        shutil.copyfile(f"{source_images_dir}/images/{a['file_name']}", f"{out_dir}/images/{a['file_name']}")
+        crop_annotations(f"{source_images_dir}/images", f'{out_dir}/crop', a)
 
 def crop_annotations(source_dir, target_dir, ann):
     [name, ext] = ann["file_name"].split(".") 
@@ -66,7 +67,6 @@ def crop_annotations(source_dir, target_dir, ann):
     for a in ann["annotations"]:
         box = a["bbox"]
         part = im.crop((box["xmin"], box["ymin"], box["xmax"], box["ymax"]))
-        # print(name)
         for c in a["classes"]:
             if os.path.isdir(f"{target_dir}/{c}") == False:
                 os.mkdir(f"{target_dir}/{c}")
@@ -78,7 +78,6 @@ def crop_annotations(source_dir, target_dir, ann):
 def generate_dataset(remo_json, source_images_dir, out_dir):
     f = open(remo_json)
     data = json.load(f)
-
     copy_source_images(data, source_images_dir, out_dir)
     for a in data:
         generate_csv_from_annotation(a, f'{out_dir}/csvs')
