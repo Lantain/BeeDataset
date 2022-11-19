@@ -1,6 +1,6 @@
 import argparse
 import os
-from src import annotations_csv
+from . import csv
 from src.processors.labels import generate_labels_file
 from src.record_csv import create_record_csv
 from PIL import Image
@@ -45,8 +45,8 @@ if __name__ == '__main__':
     training_set, test_set = rows[:split_x], rows[split_x:]
     print(f"Training len: {len(training_set)}; Test len: {len(test_set)}")
     
-    annotations_csv.save_rows(training_set, TRAIN_CSV)
-    annotations_csv.save_rows(test_set, TEST_CSV)
+    csv.save_rows(training_set, TRAIN_CSV)
+    csv.save_rows(test_set, TEST_CSV)
 
     create_record_csv(TRAIN_CSV, IMG_DIR, TRAIN_RECORD, LABELS_PBTXT)
     create_record_csv(TEST_CSV, IMG_DIR, TEST_RECORD, LABELS_PBTXT)

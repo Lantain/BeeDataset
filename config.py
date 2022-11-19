@@ -11,7 +11,7 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--model')
     args = parser.parse_args()
     
-    out = f"{os.getcwd()}/out/{args.model}/trained"
+    out = f"{os.getcwd()}/out/models/{args.model}/trained"
 
     name = get_last_checkpoint_name(out)
     print(f"Updating {args.key} config value for model: {args.model}...")
