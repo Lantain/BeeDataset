@@ -117,4 +117,4 @@ def find_checkpoint_in_dir(dir):
 
 def get_n_files_from(dir, n):
     for root, dirs, files in os.walk(dir):
-        return files[n:]
+        return files[0:n]
