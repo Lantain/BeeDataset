@@ -3,14 +3,114 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
+    "inputs": [{
+        "type": "promptString",
+        "id": "modelsInput",
+        "description": "List models and separate with ,",
+        "default": "ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8,faster_rcnn_inception_resnet_v2_640x640_coco17_tpu-8"
+    }],
     "configurations": [
         {
-            "name": "Python: Main",
+            "name": "Python: 1 Main",
             "type": "python",
             "request": "launch",
-            "program": "main.py",
+            "program": "generate_main.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--models",
+                "${input:modelsInput}"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: 2 Generate Models",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_models.py",
             "console": "integratedTerminal",
             "justMyCode": true
-        }
+        },
+        {
+            "name": "Python: 3 Generate Bash",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_bash.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: 4 Dataset Remo",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_dataset.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--type",
+                "remo",
+                "--src_dir",
+                "./source/remo",
+                "--out_dir",
+                "./out/datasets/remo"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: 4 Dataset Record",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_dataset.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--type",
+                "record",
+                "--file",
+                "./source/records/bee_dataset-train.tfrecord-00000-of-00001",
+                "--out_dir",
+                "./out/datasets/bee_datasets"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: 5 Generate Config",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_config.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--num_steps",
+                "10000",
+                "--batch_size",
+                "16",
+                "--ds_path",
+                "./out/images"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Generate Split",
+            "type": "python",
+            "request": "launch",
+            "program": "generate_split.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--source",
+                "./out/datasets/remo/crop",
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Folder to DS",
+            "type": "python",
+            "request": "launch",
+            "program": "folder_to_dataset.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--dir",
+                "./out/ds",
+                "--class_name",
+                "Bee",
+            ],
+            "justMyCode": true
+        },
     ]
 }
