@@ -14,7 +14,12 @@ def copy_rows(rows, from_dir, to_dir):
     os.mkdir(f"{to_dir}/images")
     os.mkdir(f"{to_dir}/csvs")
 
+    is_header = True
     for row in rows:
+        if len(row) == 0 or is_header is True:
+            if is_header:
+                is_header = False
+            continue
         filename = row[0]
         [name, ext] = filename.split('.')
 
@@ -28,7 +33,7 @@ def split_dir(out_dir):
         rows = list(csv.reader(csvfile))
 
         split_x = int(len(rows) * 0.8)
-        training_set, test_set = rows[:split_x], rows[split_x:]
+        training_set, test_set = rows[1:split_x], rows[1:split_x:]
         
         copy_rows(training_set, out_dir, f"{out_dir}/train")
         copy_rows(test_set, out_dir, f"{out_dir}/test")
@@ -44,8 +49,8 @@ if __name__ == '__main__':
     parser.add_argument('-o', '--out_dir')
     
     args = parser.parse_args()
+
     remove_files_from_dir(args.out_dir)
-    
     remove_files_from_dir('./out/datasets/train')
     remove_files_from_dir('./out/datasets/test')
 

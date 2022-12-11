@@ -77,10 +77,10 @@ def bee_dataset_to_csv(out_dir):
     
     bee_rows = list()
     for row in ds_rows:
-        if row[0] == "Bee":
-            bee_rows.append(row[0])
+        if row[1] == "Bee":
+            bee_rows.append(row)
 
-    csv_processor.save_rows(ds_rows, f"{out_dir}/annotations.csv")
+    csv_processor.save_rows(bee_rows, f"{out_dir}/annotations.csv")
 
 def generate_dataset(record_path, out_dir):
     os.mkdir(out_dir)

@@ -73,3 +73,48 @@ def load_models_list(path):
 def save_models_list(models, path):
     with open(path, 'w') as f:
         f.write(','.join(models))
+
+def find_labels_in_dir(dir):
+    pbtxt_regex = re.compile('(.*pbtxt$)')
+
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if pbtxt_regex.match(file):
+                print(f"Found PBTXT at {dir}/{file}")
+                return "{dir}/{file}"
+
+def find_record_in_dir(dir, type):
+    test_rec_regex = re.compile('(.*test.tfrecord$)')
+    train_rec_regex = re.compile('(.*train.tfrecord$)')
+    regex = None
+
+    if type == 'test':
+        regex = test_rec_regex
+    elif type == 'train':
+        regex = train_rec_regex
+
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if regex.match(file):
+                print(f"Found {type} record at {dir}/{file}")
+                return "{dir}/{file}"
+
+def find_config_in_dir(dir):
+    config_regex = re.compile('(.*config$)')
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if config_regex.match(file):
+                print(f"Found config at {dir}/{file}")
+                return "{dir}/{file}"
+
+def find_checkpoint_in_dir(dir):
+    config_regex = re.compile('(.*config$)')
+    for root, dirs, files in os.walk(dir):
+        for file in files:
+            if config_regex.match(file):
+                print(f"Found config at {dir}/{file}")
+                return "{dir}/{file}"
+
+def get_n_files_from(dir, n):
+    for root, dirs, files in os.walk(dir):
+        return files[n:]

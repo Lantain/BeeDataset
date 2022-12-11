@@ -46,7 +46,7 @@ def generate_csv_from_annotation_set(anns, out_file):
     for ann in anns:
         rs = annotation_to_rows(ann)
         rows.extend(rs)
-    csv_processor.save_rows(rows, f"{out_file}")
+    csv_processor.save_rows(rows, out_file)
 
 def fs_prepare(path):
     os.mkdir(path)
@@ -78,6 +78,10 @@ def crop_annotations(source_dir, target_dir, ann):
 def generate_dataset(remo_json, source_images_dir, out_dir):
     f = open(remo_json)
     data = json.load(f)
+    os.mkdir(out_dir)
+    os.mkdir(f"{out_dir}/csvs")
+    os.mkdir(f"{out_dir}/images")
+    os.mkdir(f"{out_dir}/crop")
     copy_source_images(data, source_images_dir, out_dir)
     for a in data:
         generate_csv_from_annotation(a, f'{out_dir}/csvs')

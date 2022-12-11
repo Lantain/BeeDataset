@@ -24,8 +24,11 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--models', nargs="+")
 
     args = parser.parse_args()
-    
-    main(list(args.models))
+    models = args.models
+    if len(models) == 1:
+        models = models[0].split(',')
+
+    main(list(models))
 
 # python.exe generate_main.py --models ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8 faster_rcnn_inception_resnet_v2_640x640_coco17_tpu-8
 # python.exe generate_models.py
