@@ -95,20 +95,10 @@
             "args": [
                 "--source",
                 "./out/datasets/remo/crop",
-            ],
-            "justMyCode": true
-        },
-        {
-            "name": "Python: Folder to DS",
-            "type": "python",
-            "request": "launch",
-            "program": "folder_to_dataset.py",
-            "console": "integratedTerminal",
-            "args": [
-                "--dir",
+                "--out",
                 "./out/ds",
                 "--class_name",
-                "Bee",
+                "Bee"
             ],
             "justMyCode": true
         },
