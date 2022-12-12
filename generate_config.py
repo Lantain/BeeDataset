@@ -1,5 +1,5 @@
 from src.processors import config as config_processor
-from util import load_models_list, find_record_in_dir, find_labels_in_dir
+from src.util import load_models_list, find_record_in_dir, find_labels_in_dir
 import argparse
 
 OUT_DIR = "./out"
@@ -10,8 +10,8 @@ if __name__ == '__main__':
         description='Fill models configs',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument('--num_steps')
-    parser.add_argument('--batch_size')
+    parser.add_argument('--num_steps', type=int)
+    parser.add_argument('--batch_size', type=int)
     parser.add_argument('--ds_path')
 
     args = parser.parse_args()

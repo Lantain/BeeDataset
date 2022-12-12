@@ -1,7 +1,7 @@
 import re
 import os
 from object_detection.utils import config_util
-from util import get_last_checkpoint_name
+from src.util import get_last_checkpoint_name
 
 def update_config_values_regex(model, values):
     config_path = f'./out/models/{model}/pipeline.config'
@@ -84,15 +84,15 @@ def fill_config(model, labels_path, train_rec_path, test_rec_path, num_steps, ba
     fill_config_defaults(model)
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
 
-    configs['train_input_reader'].label_map_path = labels_path
-    configs['train_input_reader']['tf_record_input_reader'] = train_rec_path
+    configs['train_input_config'].label_map_path = labels_path
+    configs['train_input_config'].tf_record_input_reader.input_path[:] = [train_rec_path]
 
-    configs['eval_input_reader'].label_map_path = labels_path
-    configs['eval_input_reader']['tf_record_input_reader'].input_path = test_rec_path
+    configs['eval_input_config'].label_map_path = labels_path
+    configs['eval_input_config'].tf_record_input_reader.input_path[:] = [test_rec_path]
 
     configs['train_config'].num_steps = num_steps
     configs['train_config'].batch_size = batch_size
-    configs['train_config'].fine_tune_checkpoint = get_last_checkpoint_name(f'./out/models/{model}')
+    configs['train_config'].fine_tune_checkpoint = get_last_checkpoint_name(f'./out/models/{model}/checkpoint')
 
     # if re.match('ssd_mobilenet_v2_fpnlite.+', model):
     #     configs['train_input_config'].tf_record_input_reader.input_path[:] = [get_train_record_path()]
