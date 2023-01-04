@@ -27,3 +27,7 @@ def dir_to_features(label, path):
             image = Image.open(f"{path}/{f}")
             rows.append([f, label, image.width, image.height, 0, 0, image.width, image.height])
     return rows
+
+def unique_column_values(csv_path, column) -> list:
+    data = pd.read_csv(csv_path)
+    return data[column].unique().tolist()

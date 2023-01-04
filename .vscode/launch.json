@@ -102,5 +102,21 @@
             ],
             "justMyCode": true
         },
+        {
+            "name": "Python: Hive Make",
+            "type": "python",
+            "request": "launch",
+            "program": "hive_make.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--model",
+                "ssd_mobilenet_v2_fpnlite_320x320_coco17_tpu-8",
+                "--out",
+                "./out/myhive",
+                "--dataset",
+                "remo:./source/remo"
+            ],
+            "justMyCode": true   
+        }
     ]
 }

@@ -8,12 +8,14 @@ OUT_DIR = "./out"
 DATASETS_DIR = f"{OUT_DIR}/datasets"
 MODELS_DIR = f"{OUT_DIR}/models"
 MODELS_LIST = f"{OUT_DIR}/models.txt"
+HIVES_DIR= f"{OUT_DIR}/hives"
 
 def flush_workspace():
     util.remove_files_from_dir(OUT_DIR)
     os.mkdir(OUT_DIR)
     os.mkdir(DATASETS_DIR)
     os.mkdir(MODELS_DIR)
+    os.mkdir(HIVES_DIR)
 
 def main(models: list):
     flush_workspace()
