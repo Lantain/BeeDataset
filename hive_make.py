@@ -45,7 +45,7 @@ if __name__ == '__main__':
     os.mkdir(HIVE_DIR_PATH)
 
     ds_type, ds_path = args.dataset.split(":")
-    
+
     print("Dataset parse... ", end='')
     if ds_type == 'remo':
         remo.generate_dataset(f'{ds_path}/remo.json', ds_path, HIVE_DIR_DATASET)
@@ -77,7 +77,7 @@ if __name__ == '__main__':
         # "labels": labels
     }
 
-    with open(HIVE_DIR_CONFIG, 'w', encoding='utf-8') as f:
+    with open(HIVE_DIR_CONFIG, 'r', encoding='utf-8') as f:
         json.dump(default_config, f, ensure_ascii=False, indent=4)
 
     print("OK")

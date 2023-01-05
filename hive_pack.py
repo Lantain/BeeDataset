@@ -31,7 +31,7 @@ if __name__ == '__main__':
     with open(HIVE_DIR_CONFIG, 'w', encoding='UTF8') as f:
         config = json.load(f)
 
-    HIVE_MODEL_DIR=f"{HIVE_DIR_PATH}/{config.model}"
+    HIVE_MODEL_DIR=f"{HIVE_DIR_PATH}/{config['model']}"
     HIVE_DIR_PIPELINE=f"{HIVE_MODEL_DIR}/pipeline.config"
 
     HIVE_DIR_TEST_CSV=f"{HIVE_DIR_PATH}/test.csv"
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     for label in list(config["labels"]):
         dft = df.query(f"class == @label")
-        df_train, df_test = train_test_split(dft, test_size=config.test_train_ratio)
+        df_train, df_test = train_test_split(dft, test_size=config["test_train_ratio"])
         train.extend(df_train)
         test.extend(df_test)
     
@@ -81,12 +81,12 @@ if __name__ == '__main__':
     # Generate config
     print("Filling the config...")
     config_processor.fill_config(
-        config.model,
+        config["model"],
         HIVE_DIR_LABELS,
         HIVE_DIR_TRAIN_TFRECORD,
         HIVE_DIR_TEST_TFRECORD,
-        config.num_steps,
-        config.batch_size,
+        config["num_steps"],
+        config["batch_size"],
         HIVE_DIR_PIPELINE
     )
 
