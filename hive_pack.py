@@ -45,8 +45,9 @@ if __name__ == '__main__':
     test = list()
     train = list()
 
+    labels = df["class"].unique().tolist()
     for label in list(config["labels"]):
-        dft = df.query(f"class == @label")
+        dft = df.query(f"class == {label}")
         df_train, df_test = train_test_split(dft, test_size=config["test_train_ratio"])
         train.extend(df_train)
         test.extend(df_test)
@@ -93,4 +94,3 @@ if __name__ == '__main__':
     # Pack
     print(f"Packing: {args.name}")
     shutil.make_archive(f"./{args.name}.hive", 'zip', args.hive_dir)
-    
