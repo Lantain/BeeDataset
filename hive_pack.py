@@ -28,7 +28,7 @@ if __name__ == '__main__':
     HIVE_DIR_TFRECORD=f"{HIVE_DIR_PATH}/record.tfrecord"
     HIVE_DIR_IMAGES=f"{HIVE_DIR_PATH}/images"
 
-    with open(HIVE_DIR_CONFIG, 'w', encoding='UTF8') as f:
+    with open(HIVE_DIR_CONFIG, 'r', encoding='UTF8') as f:
         config = json.load(f)
 
     HIVE_MODEL_DIR=f"{HIVE_DIR_PATH}/{config['model']}"
