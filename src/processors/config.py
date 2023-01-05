@@ -3,8 +3,7 @@ import os
 from object_detection.utils import config_util
 from src.util import get_last_checkpoint_name
 
-def update_config_values_regex(model, values):
-    config_path = f'./out/models/{model}/pipeline.config'
+def update_config_values_regex(config_path, values):
     with open(config_path) as f:
         config = f.read()
     with open(config_path, 'w') as f:
@@ -12,8 +11,8 @@ def update_config_values_regex(model, values):
             config = re.sub(obj['regex'],  obj['value'], config)
         f.write(config)
 
-def set_config_value(key, value, model):
-    path = f"./out/models/{model}.config"
+def set_config_value(key, value, model_dir):
+    path = f"{model_dir}/pipeline.config"
     with open(path) as f:
         config = f.read()
 
@@ -36,7 +35,7 @@ def get_fine_tune_checkpoint(model):
 def fill_config_defaults(model_name, pipeline_config_path):
     cwd = os.getcwd().replace('\\', "\\\\");
     labelmap_path = f'{cwd}/assets/labels.pbtxt'
-    fine_tune_checkpoint = pipeline_config_path or get_fine_tune_checkpoint(model_name)
+    fine_tune_checkpoint = get_fine_tune_checkpoint(model_name)
     train_record_path = get_train_record_path()
     test_record_path = get_test_record_path()
     num_classes = 1
@@ -77,7 +76,7 @@ def fill_config_defaults(model_name, pipeline_config_path):
             "value": 'fine_tune_checkpoint_type: "{}"'.format('detection')
         }
     ])
-    update_config_values_regex(fine_tune_checkpoint, values)
+    update_config_values_regex(pipeline_config_path, values)
 
 def fill_config(model, model_dir, labels_path, train_rec_path, test_rec_path, num_steps, batch_size):
     pipeline_config_path = f"{model_dir}/pipeline.config"
