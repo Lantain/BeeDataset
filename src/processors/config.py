@@ -32,10 +32,10 @@ def get_fine_tune_checkpoint(model):
     cwd = os.getcwd().replace('\\', "\\\\")
     return f'{cwd}/out/models/{model}/checkpoint/ckpt-0'
 
-def fill_config_defaults(model_name, pipeline_config_path):
+def fill_config_defaults(checkpoint_path, pipeline_config_path):
     cwd = os.getcwd().replace('\\', "\\\\");
     labelmap_path = f'{cwd}/assets/labels.pbtxt'
-    fine_tune_checkpoint = get_fine_tune_checkpoint(model_name)
+
     train_record_path = get_train_record_path()
     test_record_path = get_test_record_path()
     num_classes = 1
@@ -49,7 +49,7 @@ def fill_config_defaults(model_name, pipeline_config_path):
         },
         {
             "regex": 'fine_tune_checkpoint: ".*?"',
-            "value": 'fine_tune_checkpoint: "{}"'.format(fine_tune_checkpoint)
+            "value": 'fine_tune_checkpoint: "{}"'.format(checkpoint_path)
         },
         {
             "regex": '(input_path: ".*?)(PATH_TO_BE_CONFIGURED/train)(.*?")',
@@ -78,9 +78,20 @@ def fill_config_defaults(model_name, pipeline_config_path):
     ])
     update_config_values_regex(pipeline_config_path, values)
 
+
+def set_checkpoint_value(model_dir, checkpoint_name):
+    configs = config_util.get_configs_from_pipeline_file(f"{model_dir}/pipeline.config")
+
+
 def fill_config(model, model_dir, labels_path, train_rec_path, test_rec_path, num_steps, batch_size):
     pipeline_config_path = f"{model_dir}/pipeline.config"
-    fill_config_defaults(model, pipeline_config_path)
+    checkpoint_name = get_last_checkpoint_name(f"{model_dir}/trained")
+    checkpoint_path = get_fine_tune_checkpoint(model)
+
+    if checkpoint_name is not None:
+        checkpoint_path = f"{model_dir}/trained/{checkpoint_name}"
+
+    fill_config_defaults(checkpoint_path, pipeline_config_path)
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
 
     configs['train_input_config'].label_map_path = labels_path

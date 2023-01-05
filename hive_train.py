@@ -17,7 +17,8 @@ def run(pipeline_config_path, model_dir, num_train_steps):
             train_steps=num_train_steps,
             use_tpu=False,
             checkpoint_every_n=250,
-            record_summaries=True)
+            record_summaries=True
+        )
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Train a hive')
@@ -31,9 +32,10 @@ if __name__ == '__main__':
     
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
         config = json.load(f)
-
+    print(f"Model: {model_dir}")
     run(
         f"{model_dir}/pipeline.config",
         model_dir,
         num_train_steps=args.num_steps or config.num_steps
     )
+    print(f"Model: {model_dir}")
