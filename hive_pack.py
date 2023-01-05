@@ -50,8 +50,8 @@ if __name__ == '__main__':
     for label in labels:
         dft = df[df["class"] == label]
         df_train, df_test = train_test_split(dft, test_size=config["test_train_ratio"])
-        train.extend(df_train)
-        test.extend(df_test)
+        train.extend(df_train.values.tolist())
+        test.extend(df_test.values.tolist())
     
     random.seed(0)
     random.shuffle(train)
