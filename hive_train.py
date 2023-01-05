@@ -1,0 +1,35 @@
+import argparse
+import shutil
+import os
+import json
+import time
+import tensorflow.compat.v2 as tf
+from object_detection import model_lib_v2
+
+def run(pipeline_config_path, model_dir, num_train_steps):
+    tf.config.set_soft_device_placement(True)
+    strategy = tf.compat.v2.distribute.MirroredStrategy()
+
+    with strategy.scope():
+        model_lib_v2.train_loop(
+            pipeline_config_path=pipeline_config_path,
+            model_dir=model_dir,
+            train_steps=num_train_steps,
+            use_tpu=False,
+            checkpoint_every_n=250,
+            record_summaries=True)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Create a hive folder',
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument('--hive', type=str)
+    parser.add_argument('--num_steps', type=int, required=False)
+    args = parser.parse_args()
+
+    name = os.path.basename(args.hive)
+    shutil.unpack_archive(args.hive, f"./out/{str(time.time())}-{name.replace('.hive', '')}")
+
+    
+
