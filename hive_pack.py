@@ -84,12 +84,12 @@ if __name__ == '__main__':
     print("Filling the config...")
     config_processor.fill_config(
         config["model"],
+        HIVE_MODEL_DIR,
         HIVE_DIR_LABELS,
         HIVE_DIR_TRAIN_TFRECORD,
         HIVE_DIR_TEST_TFRECORD,
         config["num_steps"],
         config["batch_size"],
-        HIVE_DIR_PIPELINE
     )
 
     # Pack

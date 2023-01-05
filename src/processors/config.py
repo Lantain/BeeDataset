@@ -77,10 +77,10 @@ def fill_config_defaults(model_name, pipeline_config_path):
             "value": 'fine_tune_checkpoint_type: "{}"'.format('detection')
         }
     ])
-    update_config_values_regex(model_name, values)
+    update_config_values_regex(fine_tune_checkpoint, values)
 
-def fill_config(model, labels_path, train_rec_path, test_rec_path, num_steps, batch_size, pipeline_config_path):
-    pipeline_config_path = pipeline_config_path or f'./out/models/{model}/pipeline.config'
+def fill_config(model, model_dir, labels_path, train_rec_path, test_rec_path, num_steps, batch_size):
+    pipeline_config_path = f"{model_dir}/pipeline.config"
     fill_config_defaults(model, pipeline_config_path)
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
 
@@ -92,7 +92,7 @@ def fill_config(model, labels_path, train_rec_path, test_rec_path, num_steps, ba
 
     configs['train_config'].num_steps = num_steps
     configs['train_config'].batch_size = batch_size
-    configs['train_config'].fine_tune_checkpoint = get_last_checkpoint_name(f'./out/models/{model}/checkpoint')
+    configs['train_config'].fine_tune_checkpoint = get_last_checkpoint_name(f'{model_dir}/checkpoint')
 
     # if re.match('ssd_mobilenet_v2_fpnlite.+', model):
     #     configs['train_input_config'].tf_record_input_reader.input_path[:] = [get_train_record_path()]
@@ -103,4 +103,4 @@ def fill_config(model, labels_path, train_rec_path, test_rec_path, num_steps, ba
         configs['eval_config'].batch_size = 2
 
     pipeline_proto = config_util.create_pipeline_proto_from_configs(configs)
-    config_util.save_pipeline_config(pipeline_proto, f'./out/models/{model}')
+    config_util.save_pipeline_config(pipeline_proto, model_dir)

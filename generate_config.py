@@ -20,7 +20,8 @@ if __name__ == '__main__':
 
     for model in models:
         config_processor.fill_config(
-            model, 
+            model,
+            f"./out/models/{model}",
             find_labels_in_dir(args.ds_path), 
             find_record_in_dir(args.ds_path, 'train'), 
             find_record_in_dir(args.ds_path, 'test'), 
