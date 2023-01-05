@@ -33,10 +33,10 @@ def get_fine_tune_checkpoint(model):
     cwd = os.getcwd().replace('\\', "\\\\")
     return f'{cwd}/out/models/{model}/checkpoint/ckpt-0'
 
-def fill_config_defaults(model_name):
+def fill_config_defaults(model_name, pipeline_config_path):
     cwd = os.getcwd().replace('\\', "\\\\");
     labelmap_path = f'{cwd}/assets/labels.pbtxt'
-    fine_tune_checkpoint = get_fine_tune_checkpoint(model_name)
+    fine_tune_checkpoint = pipeline_config_path or get_fine_tune_checkpoint(model_name)
     train_record_path = get_train_record_path()
     test_record_path = get_test_record_path()
     num_classes = 1
@@ -81,7 +81,7 @@ def fill_config_defaults(model_name):
 
 def fill_config(model, labels_path, train_rec_path, test_rec_path, num_steps, batch_size, pipeline_config_path):
     pipeline_config_path = pipeline_config_path or f'./out/models/{model}/pipeline.config'
-    fill_config_defaults(model)
+    fill_config_defaults(model, pipeline_config_path)
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
 
     configs['train_input_config'].label_map_path = labels_path
