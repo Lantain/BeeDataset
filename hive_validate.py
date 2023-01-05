@@ -70,7 +70,7 @@ def get_processed_image(detections, labels_path, input_img_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Validate a hive')
     parser.add_argument('--hive', type=str)
-    parser.add_argument('--images', nargs="+")
+    parser.add_argument('--image')
     args = parser.parse_args()
 
     name = os.path.basename(args.hive)
@@ -79,5 +79,10 @@ if __name__ == '__main__':
 
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
         config = json.load(f)
+
+    path_to_model = f"{model_dir}/inference/saved_model"
+    model_fn = get_model(path_to_model)
+    detections = get_detections(model_fn, args.image)
+    img_detections = get_processed_image(detections, "./assets/labels.pbtxt", args.image)
 
     shutil.rmtree(model_dir)
