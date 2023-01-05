@@ -55,11 +55,15 @@ if __name__ == '__main__':
     random.shuffle(train)
     random.shuffle(test)
 
+    print(f"Packing {len(train)} train rows")
+    print(f"Packing {len(test)} test rows")
+
     # Save Split to CSVs
     csv_processor.save_rows(train, HIVE_DIR_TRAIN_CSV)
     csv_processor.save_rows(test, HIVE_DIR_TEST_CSV)
 
     # Generate Split records
+    print("Generating records...")
     record_csv.create_record_csv(
         HIVE_DIR_TRAIN_CSV, 
         HIVE_DIR_IMAGES, 
@@ -75,6 +79,7 @@ if __name__ == '__main__':
     )
 
     # Generate config
+    print("Filling the config...")
     config_processor.fill_config(
         config.model,
         HIVE_DIR_LABELS,
@@ -86,5 +91,6 @@ if __name__ == '__main__':
     )
 
     # Pack
+    print(f"Packing: {args.name}")
     shutil.make_archive(f"./{args.name}.hive", 'zip', args.hive_dir)
     

@@ -45,22 +45,28 @@ if __name__ == '__main__':
     os.mkdir(HIVE_DIR_PATH)
 
     ds_type, ds_path = args.dataset.split(":")
-
+    
+    print("Dataset parse... ", end='')
     if ds_type == 'remo':
         remo.generate_dataset(f'{ds_path}/remo.json', ds_path, HIVE_DIR_DATASET)
     elif ds_type == 'record':
         record.generate_dataset(ds_path, HIVE_DIR_DATASET)
+    print("OK")
 
     # Download and unpack model
+    print("Downloading model... ", end='')
     model_processor.download_model(args.model)
     model_processor.decompress_model(args.model, HIVE_DIR_PATH)
+    print("OK")
 
+    print("Transfer files...", end='')
     # Move images
     shutil.copytree(HIVE_DIR_DATASET_IMAGES, HIVE_DIR_IMAGES)
-
     # Copy annotations
     shutil.copy(HIVE_DIR_DATASET_CSV, HIVE_DIR_CSV)
-    
+    print("OK")
+
+    print("Create hive_config...", end='')
     # Create a Config file
     default_config = {
         "created_at": str(time.gmtime()),
@@ -74,5 +80,9 @@ if __name__ == '__main__':
     with open(HIVE_DIR_CONFIG, 'w', encoding='utf-8') as f:
         json.dump(default_config, f, ensure_ascii=False, indent=4)
 
+    print("OK")
+
+    print("Cleaning package folder...", end='')
     # Remove dataset folder
     shutil.rmtree(HIVE_DIR_DATASET)
+    print("OK")
