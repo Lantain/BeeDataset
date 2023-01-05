@@ -95,3 +95,4 @@ if __name__ == '__main__':
     # Pack
     print(f"Packing: {args.name}")
     shutil.make_archive(f"./{args.name}.hive", 'zip', args.hive_dir)
+    shutil.move(f"./{args.name}.hive.zip", f"./{args.name}.hive")
