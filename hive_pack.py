@@ -1,4 +1,4 @@
-from src.processors import config as config_processor, csv as csv_processor
+from src.processors import config as config_processor, csv as csv_processor, labels as labels_processor
 from src import record_csv
 from sklearn.model_selection import train_test_split
 import os
@@ -46,7 +46,8 @@ if __name__ == '__main__':
     train = list()
 
     labels = df["class"].unique().tolist()
-    for label in list(config["labels"]):
+    labels_processor.generate_labels_file(labels, HIVE_DIR_LABELS)
+    for label in labels:
         dft = df[df["class"] == label]
         df_train, df_test = train_test_split(dft, test_size=config["test_train_ratio"])
         train.extend(df_train)
