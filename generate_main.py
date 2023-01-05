@@ -14,7 +14,7 @@ def flush_workspace():
     util.remove_files_from_dir(OUT_DIR)
     os.mkdir(OUT_DIR)
     # os.mkdir(DATASETS_DIR)
-    # os.mkdir(MODELS_DIR)
+    os.mkdir(MODELS_DIR)
     # os.mkdir(HIVES_DIR)
 
 def main(models: list):

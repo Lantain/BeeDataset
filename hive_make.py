@@ -74,7 +74,6 @@ if __name__ == '__main__':
         "batch_size": args.batch_size,
         "model": args.model,
         "test_train_ratio": args.test_ratio,
-        # "labels": labels
     }
 
     with open(HIVE_DIR_CONFIG, 'w', encoding='utf-8') as f:
