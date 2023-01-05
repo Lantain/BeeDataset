@@ -81,8 +81,3 @@ if __name__ == '__main__':
         config = json.load(f)
 
     shutil.rmtree(model_dir)
-    
-
-
-
-    

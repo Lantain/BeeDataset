@@ -1,15 +1,9 @@
-from src.processors import config as config_processor, csv as csv_processor, labels as labels_processor
-from src import record_csv
+from src.processors import config as config_processor
 import os
-import pandas as pd
 import argparse
 import shutil
-import random
 import json
 from src.util import get_last_checkpoint_name
-
-from absl import app
-from absl import flags
 
 import tensorflow.compat.v2 as tf
 from google.protobuf import text_format
@@ -65,7 +59,7 @@ if __name__ == '__main__':
         f"{args.hive_dir}/trained/{name}", 
         args.hive_dir
     )
-
+    print("Generating inference...")
     pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
     with tf.io.gfile.GFile(HIVE_DIR_PIPELINE, 'r') as f:
         text_format.Merge(f.read(), pipeline_config)
