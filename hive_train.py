@@ -20,16 +20,20 @@ def run(pipeline_config_path, model_dir, num_train_steps):
             record_summaries=True)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='Create a hive folder',
-        formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    parser = argparse.ArgumentParser(description='Train a hive')
     parser.add_argument('--hive', type=str)
     parser.add_argument('--num_steps', type=int, required=False)
     args = parser.parse_args()
 
     name = os.path.basename(args.hive)
-    shutil.unpack_archive(args.hive, f"./out/{str(time.time())}-{name.replace('.hive', '')}")
-
+    model_dir = f"./out/{str(time.time())}-{name.replace('.hive', '')}"
+    shutil.unpack_archive(args.hive, model_dir)
     
+    with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
+        config = json.load(f)
 
+    run(
+        f"{model_dir}/pipeline.config",
+        model_dir,
+        num_train_steps=args.num_steps or config.num_steps
+    )

@@ -40,9 +40,11 @@ if __name__ == '__main__':
     HIVE_DIR_TFRECORD=f"{HIVE_DIR_PATH}/record.tfrecord"
     HIVE_DIR_IMAGES=f"{HIVE_DIR_PATH}/images"
     HIVE_DIR_CONFIG=f"{HIVE_DIR_PATH}/config.json"
+    HIVE_TRAINED = f"{HIVE_DIR_PATH}/trained"
 
     util.remove_files_from_dir(HIVE_DIR_PATH)
     os.mkdir(HIVE_DIR_PATH)
+    os.mkdir(HIVE_TRAINED)
 
     ds_type, ds_path = args.dataset.split(":")
 
