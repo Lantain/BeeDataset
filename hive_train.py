@@ -36,7 +36,7 @@ if __name__ == '__main__':
     print(f"Model: {model_dir}")
     run(
         f"{model_dir}/{config['model']}/pipeline.config",
-        model_dir,
+        f"{model_dir}/trained",
         num_train_steps=args.num_steps or config.num_steps
     )
     print(f"Model: {model_dir}")
