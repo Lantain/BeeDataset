@@ -102,7 +102,7 @@ def fill_config(model, model_dir, labels_path, train_rec_path, test_rec_path, nu
 
     configs['train_config'].num_steps = num_steps
     configs['train_config'].batch_size = batch_size
-    configs['train_config'].fine_tune_checkpoint = get_last_checkpoint_name(f'{model_dir}/checkpoint')
+    configs['train_config'].fine_tune_checkpoint = checkpoint_path
 
     # if re.match('ssd_mobilenet_v2_fpnlite.+', model):
     #     configs['train_input_config'].tf_record_input_reader.input_path[:] = [get_train_record_path()]
