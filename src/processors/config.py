@@ -90,6 +90,8 @@ def fill_config(model, model_dir, labels_path, train_rec_path, test_rec_path, nu
 
     if checkpoint_name is not None:
         checkpoint_path = f"{model_dir}/trained/{checkpoint_name}"
+    else:
+        checkpoint_path = f"{model_dir}/checkpoint/ckpt-0"
 
     fill_config_defaults(checkpoint_path, pipeline_config_path)
     configs = config_util.get_configs_from_pipeline_file(pipeline_config_path)
