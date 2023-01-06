@@ -74,7 +74,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     name = os.path.basename(args.hive)
-    model_dir = f"./out/{str(time.time())}-{name.replace('.hive', '')}"
+    model_dir = f"./{name.replace('.hive', '')}"
     shutil.rmtree(model_dir)
     shutil.unpack_archive(args.hive, model_dir)
 
