@@ -75,6 +75,7 @@ if __name__ == '__main__':
 
     name = os.path.basename(args.hive)
     model_dir = f"./out/{str(time.time())}-{name.replace('.hive', '')}"
+    shutil.rmtree(model_dir)
     shutil.unpack_archive(args.hive, model_dir)
 
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:

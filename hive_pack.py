@@ -17,11 +17,11 @@ if __name__ == '__main__':
         description='Split and pack a hive folder',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument('--hive_dir', type=str)
+    # parser.add_argument('--hive_dir', type=str)
     parser.add_argument('--name', type=str)
     args = parser.parse_args()
 
-    HIVE_DIR_PATH=args.hive_dir
+    HIVE_DIR_PATH=f"./{args.name}"
     HIVE_DIR_CONFIG=f"{HIVE_DIR_PATH}/config.json"
     HIVE_DIR_CSV=f"{HIVE_DIR_PATH}/annotations.csv"
     HIVE_DIR_LABELS=f"{HIVE_DIR_PATH}/labels.pbtxt"
