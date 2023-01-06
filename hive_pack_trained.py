@@ -22,7 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--name', type=str)
     args = parser.parse_args()
 
-    HIVE_DIR_PATH=f"{os.getcwd()}/{args.hive_dir}"
+    HIVE_DIR_PATH=f"./{args.name}"
     HIVE_DIR_CONFIG=f"{HIVE_DIR_PATH}/config.json"
     HIVE_DIR_CSV=f"{HIVE_DIR_PATH}/annotations.csv"
     HIVE_DIR_LABELS=f"{HIVE_DIR_PATH}/labels.pbtxt"
@@ -70,6 +70,6 @@ if __name__ == '__main__':
 
     # Pack
     print(f"Packing: {args.name}")
-    shutil.make_archive(f"./{args.name}.hive", 'zip', HIVE_DIR_PATH)
+    shutil.make_archive(f"./trained_{args.name}.hive", 'zip', HIVE_DIR_PATH)
     shutil.move(f"./trained_{args.name}.hive.zip", f"./trained_{args.name}.hive")
     shutil.rmtree(HIVE_DIR_PATH)

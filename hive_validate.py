@@ -8,7 +8,7 @@ import src.util as utils
 from object_detection.utils import visualization_utils as viz_utils, label_map_util
 from object_detection import model_lib_v2
 import matplotlib.pyplot as plt
-
+import tensorflow.compat.v2 as tf
 
 def get_model(saved_model_path):
     print('Loading model...', end=' ')
@@ -75,8 +75,11 @@ if __name__ == '__main__':
 
     name = os.path.basename(args.hive)
     model_dir = f"./{name.replace('.hive', '')}"
-    shutil.rmtree(model_dir)
-    shutil.unpack_archive(args.hive, model_dir)
+    try:
+      shutil.rmtree(model_dir)
+    except:
+      print("Huh")
+    shutil.unpack_archive(args.hive, model_dir, 'zip')
 
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
         config = json.load(f)
@@ -84,6 +87,6 @@ if __name__ == '__main__':
     path_to_model = f"{model_dir}/inference/saved_model"
     model_fn = get_model(path_to_model)
     detections = get_detections(model_fn, args.image)
-    img_detections = get_processed_image(detections, "./assets/labels.pbtxt", args.image)
+    img_detections = get_processed_image(detections, f"{model_dir}/labels.pbtxt", args.image)
 
     shutil.rmtree(model_dir)
