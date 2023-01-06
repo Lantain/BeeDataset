@@ -20,9 +20,6 @@ if __name__ == '__main__':
     )
     parser.add_argument('--hive_dir', type=str)
     parser.add_argument('--name', type=str)
-    parser.add_argument('--trained_checkpoint_dir', type=str)
-    parser.add_argument('--pipeline_config_path', type=str)
-    parser.add_argument('--output_directory', type=str)
     args = parser.parse_args()
 
     HIVE_DIR_PATH=f"{os.getcwd()}/{args.hive_dir}"
@@ -57,7 +54,7 @@ if __name__ == '__main__':
     config_processor.set_config_value(
         'fine_tune_checkpoint', 
         f"{args.hive_dir}/trained/{name}", 
-        args.hive_dir
+        HIVE_MODEL_DIR
     )
     print("Generating inference...")
     pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
@@ -65,18 +62,14 @@ if __name__ == '__main__':
         text_format.Merge(f.read(), pipeline_config)
     text_format.Merge('', pipeline_config)
     exporter_lib_v2.export_inference_graph(
-        '', 
+        'image_tensor', 
         pipeline_config, 
         HIVE_DIR_TRAINED,
-        HIVE_DIR_INFERENCE, 
-        '', 
-        '',
-        '', 
-        ''
+        HIVE_DIR_INFERENCE
     )
 
     # Pack
     print(f"Packing: {args.name}")
-    shutil.make_archive(f"./{args.name}.hive", 'zip', args.hive_dir)
+    shutil.make_archive(f"./{args.name}.hive", 'zip', HIVE_DIR_PATH)
     shutil.move(f"./trained_{args.name}.hive.zip", f"./trained_{args.name}.hive")
     shutil.rmtree(HIVE_DIR_PATH)
