@@ -28,13 +28,13 @@ if __name__ == '__main__':
 
     name = os.path.basename(args.hive)
     model_dir = f"./out/{str(time.time())}-{name.replace('.hive', '')}"
-    shutil.unpack_archive(args.hive, model_dir)
+    shutil.unpack_archive(args.hive, model_dir, 'zip')
     
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
         config = json.load(f)
     print(f"Model: {model_dir}")
     run(
-        f"{model_dir}/pipeline.config",
+        f"{model_dir}/{config['model']}/pipeline.config",
         model_dir,
         num_train_steps=args.num_steps or config.num_steps
     )
