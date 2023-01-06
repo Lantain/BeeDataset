@@ -16,7 +16,7 @@ def run(pipeline_config_path, model_dir, num_train_steps):
             model_dir=model_dir,
             train_steps=num_train_steps,
             use_tpu=False,
-            checkpoint_every_n=250,
+            checkpoint_every_n=50,
             record_summaries=True
         )
 
