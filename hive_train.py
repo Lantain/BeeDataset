@@ -33,6 +33,7 @@ def main(unused_argv):
     #os.mkdir(model_dir)
     shutil.copy(args.hive, f"{args.hive}.zip")
     shutil.unpack_archive(args.hive, model_dir, 'zip')
+    os.remove(f"{args.hive}.zip")
     
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
         config = json.load(f)
