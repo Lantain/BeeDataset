@@ -28,7 +28,10 @@ if __name__ == '__main__':
 
     name = os.path.basename(args.hive)
     model_dir = f"./{name.replace('.hive', '')}"
-    shutil.rmtree(model_dir)
+    if os.path.exists(model_dir):
+        shutil.rmtree(model_dir)
+    #os.mkdir(model_dir)
+    shutil.copy(args.hive, f"{args.hive}.zip")
     shutil.unpack_archive(args.hive, model_dir, 'zip')
     
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
