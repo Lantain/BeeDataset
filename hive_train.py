@@ -20,7 +20,7 @@ def run(pipeline_config_path, model_dir, num_train_steps):
             record_summaries=True
         )
 
-if __name__ == '__main__':
+def main(unused_argv):
     parser = argparse.ArgumentParser(description='Train a hive')
     parser.add_argument('--hive', type=str)
     parser.add_argument('--num_steps', type=int, required=False)
@@ -43,3 +43,6 @@ if __name__ == '__main__':
         num_train_steps=args.num_steps or config.num_steps
     )
     print(f"Model: {model_dir}")
+
+if __name__ == '__main__':
+    tf.compat.v1.app.run()
