@@ -8,7 +8,7 @@ import src.util as utils
 from object_detection.utils import visualization_utils as viz_utils, label_map_util
 from object_detection import model_lib_v2
 import matplotlib.pyplot as plt
-import tensorflow.compat.v2 as tf
+import tensorflow as tf
 
 def get_model(saved_model_path):
     print('Loading model...', end=' ')

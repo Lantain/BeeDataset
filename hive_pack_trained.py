@@ -70,6 +70,6 @@ if __name__ == '__main__':
 
     # Pack
     print(f"Packing: {args.name}")
-    shutil.make_archive(f"./trained_{args.name}.hive", 'zip', HIVE_DIR_PATH)
-    shutil.move(f"./trained_{args.name}.hive.zip", f"./trained_{args.name}.hive")
+    shutil.make_archive(f"./t_{args.name}.hive", 'zip', HIVE_DIR_PATH)
+    shutil.move(f"./t_{args.name}.hive.zip", f"./t_{args.name}.hive")
     shutil.rmtree(HIVE_DIR_PATH)
