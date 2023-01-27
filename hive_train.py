@@ -23,14 +23,15 @@ def run(pipeline_config_path, model_dir, num_train_steps):
 def main(unused_argv):
     parser = argparse.ArgumentParser(description='Train a hive')
     parser.add_argument('--hive', type=str)
+    parser.add_argument('--dir', type=str, required=False, default=".")
     parser.add_argument('--num_steps', type=int, required=False)
     args = parser.parse_args()
 
     name = os.path.basename(args.hive)
-    model_dir = f"./{name.replace('.hive', '')}"
+    model_dir = f"{args.dir}/{name.replace('.hive', '')}"
     if os.path.exists(model_dir):
         shutil.rmtree(model_dir)
-    #os.mkdir(model_dir)
+    
     shutil.copy(args.hive, f"{args.hive}.zip")
     shutil.unpack_archive(args.hive, model_dir, 'zip')
     os.remove(f"{args.hive}.zip")
@@ -38,6 +39,7 @@ def main(unused_argv):
     with open(f"{model_dir}/config.json", 'r', encoding='UTF8') as f:
         config = json.load(f)
     print(f"Model: {model_dir}")
+    os.chdir(f"{model_dir}/..")
     run(
         f"{model_dir}/{config['model']}/pipeline.config",
         f"{model_dir}/trained",

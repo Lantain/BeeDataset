@@ -26,6 +26,7 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str)
     parser.add_argument('--num_steps', type=int, default=1000, required=False)
     parser.add_argument('--batch_size', type=int, default=16, required=False)
+    parser.add_argument('--transforms', nargs="+", required=False)
     parser.add_argument('--test_ratio', type=float, default=0.2, required=False)
     
     args = parser.parse_args()
