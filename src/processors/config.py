@@ -1,7 +1,12 @@
 import re
 import os
+import tensorflow as tf
+from google.protobuf import text_format
+
 from object_detection.utils import config_util
 from src.util import get_last_checkpoint_name
+from object_detection import exporter_lib_v2
+from object_detection.protos import pipeline_pb2
 
 def update_config_values_regex(config_path, values):
     with open(config_path) as f:
@@ -79,9 +84,53 @@ def fill_config_defaults(checkpoint_path, pipeline_config_path):
     update_config_values_regex(pipeline_config_path, values)
 
 
-def set_checkpoint_value(model_dir, checkpoint_name):
-    configs = config_util.get_configs_from_pipeline_file(f"{model_dir}/pipeline.config")
+def set_checkpoint_value(config_path, ckpt_path, out_dir):
+    configs = config_util.get_configs_from_pipeline_file(config_path)
+    configs['train_config'].fine_tune_checkpoint = ckpt_path
+    pipeline_proto = config_util.create_pipeline_proto_from_configs(configs)
+    config_util.save_pipeline_config(pipeline_proto, out_dir or config_path)
 
+
+def export_inference_graph(pipeline_config_path, trained_checkpoint_dir, output_directory, exact_ckpt):
+    pipeline_config = pipeline_pb2.TrainEvalPipelineConfig()
+    with tf.io.gfile.GFile(pipeline_config_path, 'r') as f:
+        text_format.Merge(f.read(), pipeline_config)
+
+    output_checkpoint_directory = os.path.join(output_directory, 'checkpoint')
+    output_saved_model_directory = os.path.join(output_directory, 'saved_model')
+    detection_model = exporter_lib_v2.INPUT_BUILDER_UTIL_MAP['model_build'](
+        pipeline_config.model, 
+        is_training=False
+    )
+    ckpt = tf.train.Checkpoint(model=detection_model)
+    manager = tf.train.CheckpointManager(ckpt, trained_checkpoint_dir, max_to_keep=1)
+    checkpoint_path = manager.latest_checkpoint
+    
+    if exact_ckpt is not None:
+        for checkpoint in manager.checkpoints:
+            if exact_ckpt in checkpoint:
+                print(f"Found exact! {exact_ckpt}: {checkpoint}")
+                checkpoint_path = checkpoint
+
+    status = ckpt.restore(checkpoint_path).expect_partial()
+    print("checkpoints", manager.checkpoints)
+
+    zipped_side_inputs = []
+    detection_module = exporter_lib_v2.DETECTION_MODULE_MAP['image_tensor'](detection_model,
+                                                    False,
+                                                    list(zipped_side_inputs))
+    concrete_function = detection_module.__call__.get_concrete_function()
+    status.assert_existing_objects_matched()
+
+    exported_checkpoint_manager = tf.train.CheckpointManager(
+        ckpt, output_checkpoint_directory, max_to_keep=1)
+    exported_checkpoint_manager.save(checkpoint_number=0)
+
+    tf.saved_model.save(detection_module,
+                        output_saved_model_directory,
+                        signatures=concrete_function)
+
+    # config_util.save_pipeline_config(pipeline_config, output_directory)                                                
 
 def fill_config(model, model_dir, labels_path, train_rec_path, test_rec_path, num_steps, batch_size):
     pipeline_config_path = f"{model_dir}/pipeline.config"
