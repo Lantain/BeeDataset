@@ -66,7 +66,7 @@ if __name__ == '__main__':
             f"{pipeline_ckpt_dir}",
             ckpt
         )
-
+    analisys = list()
     for ckpt in filtered:
         print(f"Analyzing {ckpt}")
         ckpt_dir = f"{model_dir}/{ckpt}"
@@ -75,25 +75,48 @@ if __name__ == '__main__':
         
         img_detections_set = list()
         i = 0
+        diffs = list()
         for img in list(args.images):
             name = os.path.basename(img)
-            print("Processing {i} - {name}")
+            print(f"Processing {i} - {name}")
             start = datetime.datetime.now()
             detections = validate.get_detections(model_fn, img)
             img_detections = validate.get_processed_image(detections, f"{model_dir}/labels.pbtxt", img)
             img_detections_set.append(img_detections)
             end = datetime.datetime.now()
-            
-            print(f"Time diff: {(start - end).microseconds / 1000} millis")
+            diff = (start - end).microseconds / 1000
+            print(f"Time diff: {diff} millis")
+            diffs.append({ 'img': name, 'time': diff })
             
             img = cv2.imread(img, 3)
             b,g,r = cv2.split(img)           # get b, g, r
             rgb_img = cv2.merge([r,g,b])     # switch it to r, g, b
-            IMAGE_SIZE = (6, 4) # Output display size as you want
 
-            plt.figure(figsize=IMAGE_SIZE, dpi=200)
-            plt.axis("off")
+            fig = plt.figure(figsize=(20, 14))
+            fig.suptitle(name, fontsize=16)
+
+            rows = 1
+            columns = 2
+
+            fig.add_subplot(rows, columns, 1)
+            plt.imshow(rgb_img)
+            plt.axis('off')
+            plt.title("Original")
+
+            fig.add_subplot(rows, columns, 2)
             plt.imshow(img_detections)
-            print(f"Saving {ckpt_dir}/{name}.png")
-            plt.savefig(f"{ckpt_dir}/{name}.png")
+            plt.axis('off')
+            plt.title("Detections")
+
+            print(f"Saving {model_dir}/{ckpt}--{name}.png")
+            plt.savefig(f"{model_dir}/{ckpt}--{name}.png")
             plt.close()
+
+        analisys.append({
+            'items': diffs,
+            'name': ckpt
+        })
+
+    with open(f"{model_dir}/analyze.json", 'w', encoding='UTF8') as f:
+        json.dumps({ 'data': analisys })
+
