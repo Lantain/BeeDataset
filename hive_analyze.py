@@ -118,5 +118,5 @@ if __name__ == '__main__':
         })
 
     with open(f"{model_dir}/analyze.json", 'w', encoding='UTF8') as f:
-        json.dumps({ 'data': analisys })
+        json.dump({ 'data': analisys }, f)
 
